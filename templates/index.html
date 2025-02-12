@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+    background: linear-gradient(135deg, #ff99cc, #ff1a66);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    font-family: 'Brush Script MT', cursive;
+    padding: 10px;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px 60px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(255, 50, 100, 0.3);
+    text-align: center;
+    position: relative;
+    animation: fadeIn 1s ease-in;
+    max-width: 90%;
+}
+
+h1 {
+    color: #ff3366;
+    font-size: 2.5em;
+    margin: 0 0 20px 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.message {
+    font-size: 1.2em;
+    color: #993366;
+    margin: 15px 0;
+}
+
+button {
+    background: #ff3366;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: transform 0.3s, background 0.3s;
+    margin: 20px 0;
+}
+
+button:hover {
+    background: #ff1a53;
+    transform: scale(1.05);
+}
+
+input[type="text"] {
+    padding: 10px;
+    font-size: 1em;
+    border: 2px solid #ff3366;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 300px;
+    text-align: center;
+}
+
+.signature {
+    font-size: 1.5em;
+    color: #ff3366;
+    margin-top: 20px;
+    animation: heartBeat 1s infinite;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.heart-decoration {
+    position: absolute;
+    color: #ff3366;
+    font-size: 1.5em;
+    animation: float 3s infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.heart-decoration:nth-child(1) { left: 10%; top: 20%; }
+.heart-decoration:nth-child(2) { right: 15%; top: 40%; }
+.heart-decoration:nth-child(3) { left: 30%; bottom: 20%; }
+
+@media (max-width: 600px) {
+    .container {
+        padding: 30px 20px;
+    }
+    h1 {
+        font-size: 2em;
+    }
+    .message {
+        font-size: 1em;
+    }
+    button {
+        font-size: 0.9em;
+        padding: 10px 20px;
+    }
+    input[type="text"] {
+        font-size: 0.9em;
+    }
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="heart-decoration">❤️</div>
+        <div class="heart-decoration">💖</div>
+        <div class="heart-decoration">💝</div>
+        
+        <h1>Happy Valentine's Day! 💞</h1>
+        
+        <p class="message">You are the <span style="color: #ff3366">♥</span> of my life!</p>
+        <p class="message">Endless love and happiness bloom for you! 🌹</p>
+        
+        <form method="POST">
+            <input type="text" name="name" placeholder="Your Name">
+            <br><br>
+            <button type="submit">Send Love 💌</button>
+        </form>
+
+        {% if name %}
+        <div class="signature" id="signature">
+            Anirban is Forever yours,<br>
+            <span style="font-size: 1.2em">💕 {{ name }} 💕</span>
+            <br>
+            "Would you be my valentine?"
+            <button type="button" id="yes">Yes 🎉</button>
+            <button type="button" id="no">No 😔</button>
+            
+            
+        </div>
+        {% endif %}
+
+        <script>
+            const yes = document.getElementById("yes");
+            const no = document.getElementById("no");
+            yes.addEventListener("click", function(e) {
+                fetch('/clicked_yes', { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Yay! You've made me the happiest! 💖");
+                        yes.disabled = true;
+                        no.disabled = true;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            });
+
+            // Optional: Handle No button
+            no.addEventListener("click", function(e) {
+                alert("Oh no! My heart breaks... 💔");
+                yes.disabled = false
+                no.style.display = "none";
+
+            });
+        </script>
+    </div>
+</body>
+</html>
