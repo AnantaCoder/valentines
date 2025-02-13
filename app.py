@@ -6,14 +6,13 @@ from flask_session import Session
 app = Flask(__name__)
 app.secret_key = 'secretkey'
 
-# Configure Flask-Session (important!)
-app.config['SESSION_TYPE'] = 'filesystem'  # Use filesystem session storage
+app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
 def get_db_connection():
     """Create a new database connection for each request"""
     return sqlitecloud.connect(
-        "sqlitecloud://cpzwofi5hz.g1.sqlite.cloud:8860/edge.sqlitecloud?apikey=BGasV9g3GJsU4FCLb18zlArPh6SqfqRwKIXFxljvUpo"
+        "sqlitecloud://cpzwofi5hz.g1.sqlite.cloud:8860/chinook.sqlite?apikey=BGasV9g3GJsU4FCLb18zlArPh6SqfqRwKIXFxljvUpo"
     )
 
 @app.route('/', methods=['GET', 'POST'])
