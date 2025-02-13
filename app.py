@@ -1,26 +1,22 @@
-from flask import Flask, render_template, request , jsonify, session
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, request, jsonify, session
+import sqlitecloud
 from datetime import datetime
 
 app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.secret_key = 'secretkey'
-db = SQLAlchemy(app)
 
+conn = sqlitecloud.connect("sqlitecloud://cpzwofi5hz.g1.sqlite.cloud:8860/chinook.sqlite?apikey=BGasV9g3GJsU4FCLb18zlArPh6SqfqRwKIXFxljvUpo")
+cursor = conn.cursor()
 
-class Love(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    status = db.Column(db.String(50), default="Not Clicked")
-    date_created = db.Column(db.DateTime, default=datetime.now)
-
-    def __init__(self, name):
-        self.name = name
-        
-with app.app_context():
-    db.create_all()
-
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS Love (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        status TEXT DEFAULT 'Not Clicked',
+        date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+""")
+conn.commit()
 
 @app.route('/', methods=['GET', 'POST'])
 def valentines_card():
@@ -29,24 +25,20 @@ def valentines_card():
     if request.method == 'POST':
         name = request.form.get('name') 
         if name:
-            new_love = Love(name)
-            db.session.add(new_love)
-            db.session.commit()
-            session['userId'] = new_love.id
-            user_status = new_love.status
+            cursor.execute("INSERT INTO Love (name) VALUES (?)", (name,))
+            conn.commit()
+            session['userId'] = cursor.lastrowid  
+            user_status = "Not Clicked"
     return render_template('index.html', name=name)
-
 
 @app.route('/clicked_yes', methods=['GET', 'POST'])
 def clicked_yes():
     if 'userId' in session:
-        love_entry = Love.query.get(session['userId'])
-        if love_entry:
-            love_entry.status = "Clicked Yes"
-            db.session.commit()
-            return jsonify({'success': True, 'status': 'Clicked'})
+        user_id = session['userId']
+        cursor.execute("UPDATE Love SET status = 'Clicked Yes' WHERE id = ?", (user_id,))
+        conn.commit()
+        return jsonify({'success': True, 'status': 'Clicked'})
     return jsonify({'success': False, 'message': 'User not found'})
-
 
 if __name__ == '__main__':
     app.run(debug=True)
