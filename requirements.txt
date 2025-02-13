@@ -2,3 +2,5 @@ Flask
 datetime
 sqlitecloud
 gunicorn
+Flask-Session
+waitress
