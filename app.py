@@ -5,7 +5,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = 'secretkey'
 
-conn = sqlitecloud.connect("sqlitecloud://cpzwofi5hz.g1.sqlite.cloud:8860/chinook.sqlite?apikey=BGasV9g3GJsU4FCLb18zlArPh6SqfqRwKIXFxljvUpo")
+conn = sqlitecloud.connect("sqlitecloud://cpzwofi5hz.g1.sqlite.cloud:8860/edge.sqlitecloud?apikey=BGasV9g3GJsU4FCLb18zlArPh6SqfqRwKIXFxljvUpo")
 cursor = conn.cursor()
 
 cursor.execute("""
