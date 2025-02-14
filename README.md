@@ -1,1 +1,2 @@
-# Project Objective ->  Testing of diffrent hosting platforms for the database and a backend.
+# Project Objective ->  Testing of different hosting platforms for the database and a backend.
+### Result :- for flask backend I  have used Render and for SQLite I have used sqlitecloud . It worked for 20 minutes but constant redeployment on render since its a free plan.
